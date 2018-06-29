@@ -23,3 +23,7 @@ authentication with Google+ API and PassportJS
 ## Add roles
 ## Error pages
 
+Nice features
+----
+Para twitter usa 127.0.0.1 en vez de localhost en el panel de la app
+http://cssdeck.com/labs/jwmv3hsv

@@ -32,4 +32,13 @@ router.get('/facebook/redirect', passport.authenticate("facebook", {failureRedir
     res.redirect('/profile/');    
 })
 
+/* TWITTER */
+// auth with twitter, scope is what we want from the user
+router.get('/twitter', passport.authenticate("twitter"));
+
+//callback route for google to redirect to, magic for retrieving the code
+router.get('/twitter/redirect', passport.authenticate("twitter", {failureRedirect: '/login'}), (req, res) => {        
+    res.redirect('/profile/');    
+})
+
 module.exports = router

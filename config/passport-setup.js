@@ -1,6 +1,7 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
+const TwitterStrategy = require('passport-twitter').Strategy;
 const secrets = require('./secrets')
 const User = require('../models/user-model')
 
@@ -36,6 +37,17 @@ passport.use(new FacebookStrategy({
     }
 ));
 
+passport.use(new TwitterStrategy({
+        consumerKey: secrets.twitter.login.consumerKey,
+        consumerSecret: secrets.twitter.login.consumerSecret,
+        callbackURL: secrets.twitter.login.callbackURL,
+    },
+    function(token, refreshToken, profile, done) {
+        console.log("Twitter passport callback function fired")
+        findOrSaveUser('twitter', profile, done);         
+    }
+));
+
 /* 
 TODO: See how to make an unique object for the user and how to add other profiles from
 profile view
@@ -49,8 +61,13 @@ const findOrSaveUser = (platform, profile, callback) => {
         'google': {
             id: 'googleId',
             imagePath: platform == 'google' ? profile._json.image.url : null
+        },
+        'twitter': {
+            id: 'twitterId',
+            imagePath: platform == 'twitter' ? ( profile.photos && profile.photos.length ? profile.photos[0].value: null)  : null
         }
     }
+    console.log(profile)
     let key = platforms.platform;
     User.findOne({key: profile.id}).then((currentUser) => {
         if (currentUser) {

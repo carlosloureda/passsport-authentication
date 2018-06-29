@@ -5,6 +5,7 @@ const userSchema = new Schema({
     username: String,
     googleId: String, // For knowing second time he/she logs in    
     facebookId: String,
+    twitterId: String,
     thumbnail: String
 })
 
