@@ -6,6 +6,7 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
 const GitHubStrategy = require('passport-github2').Strategy;
+var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
 
 passport.serializeUser((user, done) => {
     done(null, user.id); // create cookie with this user.id
@@ -61,6 +62,17 @@ passport.use(new GitHubStrategy({
     }
 ));
 
+passport.use(new LinkedInStrategy({
+        clientID: secrets.linkedin.login.clientID,
+        clientSecret: secrets.linkedin.login.clientSecret,
+        callbackURL: secrets.linkedin.login.callbackURL,
+        scope: ['r_emailaddress', 'r_basicprofile']
+    }, function(accessToken, refreshToken, profile, done) {
+        console.log("Linkedin passport callback function fired")
+        findOrSaveUser('linkedin', profile, done);
+    }
+));
+
 /* 
 TODO: See how to make an unique object for the user and how to add other profiles from
 profile view
@@ -82,6 +94,10 @@ const findOrSaveUser = (platform, profile, callback) => {
         'github': {
             id: 'githubId',
             imagePath: platform == 'github' ? ( profile.photos && profile.photos.length ? profile.photos[0].value: null)  : null
+        },
+        'linkedin': {
+            id: 'linkedinId',
+            imagePath: platform == 'linkedin' ? ( profile.photos && profile.photos.length ? profile.photos[0].value: null)  : null            
         }
     }
     console.log(profile)

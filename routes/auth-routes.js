@@ -19,7 +19,7 @@ router.get('/google', passport.authenticate("google", {
 }))
 
 //callback route for google to redirect to, magic for retrieving the code
-router.get('/google/redirect', passport.authenticate("google", {failureRedirect: '/login'}), (req, res) => {        
+router.get('/google/redirect', passport.authenticate("google", {failureRedirect: '/auth/login'}), (req, res) => {        
     res.redirect('/profile/');    
 })
 
@@ -28,7 +28,7 @@ router.get('/google/redirect', passport.authenticate("google", {failureRedirect:
 router.get('/facebook', passport.authenticate("facebook"));
 
 //callback route for google to redirect to, magic for retrieving the code
-router.get('/facebook/redirect', passport.authenticate("facebook", {failureRedirect: '/login'}), (req, res) => {        
+router.get('/facebook/redirect', passport.authenticate("facebook", {failureRedirect: '/auth/login'}), (req, res) => {        
     res.redirect('/profile/');    
 })
 
@@ -37,7 +37,7 @@ router.get('/facebook/redirect', passport.authenticate("facebook", {failureRedir
 router.get('/twitter', passport.authenticate("twitter"));
 
 //callback route for google to redirect to, magic for retrieving the code
-router.get('/twitter/redirect', passport.authenticate("twitter", {failureRedirect: '/login'}), (req, res) => {        
+router.get('/twitter/redirect', passport.authenticate("twitter", {failureRedirect: '/auth/login'}), (req, res) => {        
     res.redirect('/profile/');    
 })
 
@@ -46,7 +46,16 @@ router.get('/twitter/redirect', passport.authenticate("twitter", {failureRedirec
 router.get('/github', passport.authenticate("github", { scope: [ 'user:email' ] }));
 
 //callback route for google to redirect to, magic for retrieving the code
-router.get('/github/redirect', passport.authenticate("github", {failureRedirect: '/login'}), (req, res) => {        
+router.get('/github/redirect', passport.authenticate("github", {failureRedirect: '/auth/login'}), (req, res) => {        
+    res.redirect('/profile/');    
+})
+
+/* LINKEDIN */
+// auth with linkedin, scope is what we want from the user
+router.get('/linkedin', passport.authenticate("linkedin"));
+
+//callback route for google to redirect to, magic for retrieving the code
+router.get('/linkedin/redirect', passport.authenticate("linkedin", {failureRedirect: '/auth/login'}), (req, res) => {        
     res.redirect('/profile/');    
 })
 

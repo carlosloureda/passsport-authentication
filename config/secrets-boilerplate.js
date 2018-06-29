@@ -30,6 +30,13 @@ const secrets = {
             callbackURL: '<callbackURL>'
         }
     },
+    linkedin: {
+        login: {
+            clientID: '<clientID>',
+            clientSecret: '<clientSecret>',
+            callbackURL: '<callbackURL>'
+        }
+    },
     mongodb: {
         dbURI: '<dbURI>'
     },
