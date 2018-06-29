@@ -10,9 +10,16 @@ const secrets = {
         }
     },
     google: {
-        facebook: {
+        login: {
             clientID: '<clientID>',
             clientSecret: '<clientSecret>',
+            callbackURL: '<callbackURL>'
+        }
+    },
+    twitter: {
+        login: {
+            consumerKey: '<consumerKey>',
+            consumerSecret: '<consumerSecret>',
             callbackURL: '<callbackURL>'
         }
     },
