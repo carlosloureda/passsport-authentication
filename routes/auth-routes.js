@@ -41,4 +41,13 @@ router.get('/twitter/redirect', passport.authenticate("twitter", {failureRedirec
     res.redirect('/profile/');    
 })
 
+/* GITHUB */
+// auth with github, scope is what we want from the user
+router.get('/github', passport.authenticate("github", { scope: [ 'user:email' ] }));
+
+//callback route for google to redirect to, magic for retrieving the code
+router.get('/github/redirect', passport.authenticate("github", {failureRedirect: '/login'}), (req, res) => {        
+    res.redirect('/profile/');    
+})
+
 module.exports = router
