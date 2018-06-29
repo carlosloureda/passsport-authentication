@@ -1,9 +1,11 @@
 const passport = require('passport');
+const secrets = require('./secrets')
+const User = require('../models/user-model')
+
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
 const TwitterStrategy = require('passport-twitter').Strategy;
-const secrets = require('./secrets')
-const User = require('../models/user-model')
+const GitHubStrategy = require('passport-github2').Strategy;
 
 passport.serializeUser((user, done) => {
     done(null, user.id); // create cookie with this user.id
@@ -48,6 +50,17 @@ passport.use(new TwitterStrategy({
     }
 ));
 
+passport.use(new GitHubStrategy({
+        clientID: secrets.github.login.clientID,
+        clientSecret: secrets.github.login.clientSecret,
+        callbackURL: secrets.github.login.callbackURL
+    },
+    function(accessToken, refreshToken, profile, done) {
+        console.log("Github passport callback function fired")
+        findOrSaveUser('github', profile, done);  
+    }
+));
+
 /* 
 TODO: See how to make an unique object for the user and how to add other profiles from
 profile view
@@ -65,6 +78,10 @@ const findOrSaveUser = (platform, profile, callback) => {
         'twitter': {
             id: 'twitterId',
             imagePath: platform == 'twitter' ? ( profile.photos && profile.photos.length ? profile.photos[0].value: null)  : null
+        },
+        'github': {
+            id: 'githubId',
+            imagePath: platform == 'github' ? ( profile.photos && profile.photos.length ? profile.photos[0].value: null)  : null
         }
     }
     console.log(profile)

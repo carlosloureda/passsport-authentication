@@ -23,6 +23,13 @@ const secrets = {
             callbackURL: '<callbackURL>'
         }
     },
+    github: {
+        login: {
+            clientID: '<clientID>',
+            clientSecret: '<clientSecret>',
+            callbackURL: '<callbackURL>'
+        }
+    },
     mongodb: {
         dbURI: '<dbURI>'
     },
