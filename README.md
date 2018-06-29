@@ -7,6 +7,8 @@ authentication with Google+ API and PassportJS
 ## Other strategies
     Local (email), Google, Facebook, Twitter, Linkedin, Github
 
+    - See how to fetch emails and pictures
+
 ## Make automated tool to create a website from scratch with users login
 
 ## User registration and emails (Forgot password and so)

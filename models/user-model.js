@@ -4,6 +4,7 @@ const Schema = mongoose.Schema
 const userSchema = new Schema({
     username: String,
     googleId: String, // For knowing second time he/she logs in    
+    facebookId: String,
     thumbnail: String
 })
 

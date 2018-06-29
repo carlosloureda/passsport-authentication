@@ -9,6 +9,13 @@ const secrets = {
             clientSecret: '<clientSecret>' 
         }
     },
+    google: {
+        facebook: {
+            clientID: '<clientID>',
+            clientSecret: '<clientSecret>',
+            callbackURL: '<callbackURL>'
+        }
+    },
     mongodb: {
         dbURI: '<dbURI>'
     },
