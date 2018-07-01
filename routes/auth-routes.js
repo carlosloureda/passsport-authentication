@@ -1,6 +1,24 @@
 const router = require('express').Router()
 const passport = require('passport')
 
+// process the signup form
+router.post('/register', passport.authenticate("local-signup", {failureRedirect: '/auth/login'}), (req, res) => {
+    res.redirect('/profile/');    
+})
+
+// auth register
+router.get('/register', (req, res) => {
+    //res.render('signup',  { message: req.flash('signupMessage') })
+    res.render('signup')
+})
+
+// process the login form
+router.post('/login', passport.authenticate('local-login', {
+    successRedirect : '/profile', // redirect to the secure profile section
+    failureRedirect : '/auth/login', // redirect back to the signup page if there is an error
+    //failureFlash : true // allow flash messages
+}));
+
 // auth login
 router.get('/login', (req, res) => {
     res.render('login', { user: req.user } )
