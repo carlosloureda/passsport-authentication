@@ -37,6 +37,12 @@ const secrets = {
             callbackURL: '<callbackURL>'
         }
     },
+    emails: {
+        sendGrid: {
+            user: '<sendGridUser>',
+            password: '<sendGridPassword>'
+        }        
+    },
     mongodb: {
         dbURI: '<dbURI>'
     },

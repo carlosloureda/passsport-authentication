@@ -6,8 +6,9 @@ const mongoose = require('mongoose')
 const secrets = require('./config/secrets')
 const passport = require('passport')
 const cookieSession = require('cookie-session')
-const morgan = require('morgan');
-const bodyParser = require('body-parser');
+const morgan = require('morgan')
+const bodyParser = require('body-parser')
+const blzEmails = require('./config/emails')
 //const flash = require('connect-flash');
 
 const app = express()
@@ -42,10 +43,9 @@ app.post('/auth/register', passport.authenticate('local-signup'), (req, res) => 
 // set up profile
 app.use('/profile', profileRoutes)
 
-
-
 // create home route
-app.get('/', (req, res) => {    
+app.get('/', (req, res) => {       
+    //blzEmails.sendHelloWorldEmail()
     res.render('home', { user: req.user })
 })
 
