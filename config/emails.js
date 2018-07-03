@@ -58,6 +58,46 @@ const sendRegistrationEmail = (userModel) => {
     });
 }
 
+const sendRecoveryPasswordEmail = (userModel) => {
+    // setup e-mail data with unicode symbols
+    console.log("userModel: ", userModel)
+    let authUrl = `http://localhost:3000/auth/reset-password/${userModel.id}/${userModel.login.resetPasswordToken}`
+    console.log("authUrl: ", authUrl)
+    var mailOptions = {
+        from: from, // sender address
+        to: userModel.local.email, // list of receivers
+        subject: 'Recupera tu contraseña!', // Subject line
+        text: 'Sigue el enlace para configurar tu contraseña', // plaintext body
+        html: `<b>Sigue el enlace para configurar tu contraseña: <a href="${authUrl}">enlace</a></b>` // html body
+    };    
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, function(error, info){
+        if(error){
+            return console.log(error);
+        }
+        console.log('Message sent: ' + info.response);
+    });
+}
+
+const sendPasswordChangedEmail = (userModel) => {
+    // setup e-mail data with unicode symbols
+    var mailOptions = {
+        from: from, // sender address
+        to: userModel.local.email, // list of receivers
+        subject: 'Has modificado tu contraseña con éxito!', // Subject line
+        text: 'bla bla, Has modificado tu contraseña con éxito', // plaintext body
+        html: `<b>Has modificado tu contraseña con éxito></b>` // html body
+    };    
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, function(error, info){
+        if(error){
+            return console.log(error);
+        }
+        console.log('Message sent: ' + info.response);
+    });
+}
+
 module.exports = {
-    sendHelloWorldEmail, sendRegistrationEmail
+    sendHelloWorldEmail, sendRegistrationEmail, sendRecoveryPasswordEmail,
+    sendPasswordChangedEmail
 }

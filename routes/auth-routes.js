@@ -1,7 +1,13 @@
 const router = require('express').Router()
 const passport = require('passport')
 const AccountController = require('../controllers/account')
-
+const User = require('../models/user-model')
+const emails = require('../config/emails')
+/*
+ * =============================================================================
+ *            REGISTER & LOGIN (LOCAL) & LOGOUT
+ * =============================================================================
+ */
 // process the signup form
 router.post('/register', passport.authenticate("local-signup", {failureRedirect: '/auth/login'}), (req, res) => {
     res.redirect('/auth/login');    
@@ -10,9 +16,32 @@ router.post('/register', passport.authenticate("local-signup", {failureRedirect:
 // auth register
 router.get('/register', (req, res) => {
     //res.render('signup',  { message: req.flash('signupMessage') })
-    res.render('signup')
+    res.render('auth/signup')
 })
 
+// process the login form
+router.post('/login', passport.authenticate('local-login', {
+    successRedirect : '/profile', // redirect to the secure profile section
+    failureRedirect : '/auth/login', // redirect back to the signup page if there is an error
+    //failureFlash : true // allow flash messages
+}));
+
+// auth login
+router.get('/login', (req, res) => {
+    res.render('auth/login', { user: req.user } )
+})
+
+// auth logout
+router.get('/logout', (req, res) => {
+    req.logout();
+    res.redirect('/');
+})
+
+/*
+ * =============================================================================
+ *            EMAIL VALIDATION | RECOVER PASSWORD  
+ * =============================================================================
+ */
 /* Activate and recover passwords */
 router.get('/confirm-email/:id/:token', (req, res) => {
     let id = req.params.id
@@ -28,24 +57,55 @@ router.get('/confirm-email/:id/:token', (req, res) => {
     })
 })
 
-// process the login form
-router.post('/login', passport.authenticate('local-login', {
-    successRedirect : '/profile', // redirect to the secure profile section
-    failureRedirect : '/auth/login', // redirect back to the signup page if there is an error
-    //failureFlash : true // allow flash messages
-}));
+//get forgotpassword
+router.get('/forgot-password', (req, res) => {
+    res.render('auth/forgotpassword')
+})
+//post forgotpassword
+router.post('/forgot-password', (req, res) => {
+    let email = req.body.email
+    //TODO: validate email
+    AccountController.createRecoverPasswordToken(email)
+    //TODO: SHOW messages ...
+    res.redirect('/auth/forgot-password')
 
-// auth login
-router.get('/login', (req, res) => {
-    res.render('login', { user: req.user } )
+})
+// get reset-password /:id/:token
+router.get('/reset-password/:id/:token', (req, res) => {
+    let { id, token } = req.params
+    // TODO: validate things
+    res.render('auth/reset-password', { userId: id, token: token } )    
 })
 
-// auth logout
-router.get('/logout', (req, res) => {
-    req.logout();
-    res.redirect('/');
+//TODO: post new password
+router.post('/reset-password', (req, res) => {
+    let { password, token, userId } = req.body
+    // TODO: validate
+    
+    User.findOne({'_id': userId}).then((user) => {
+        if (user.login.resetPasswordToken === token) {            
+            //TODO: logs? IP? 
+            user.local.password = user.generateHash(password);
+            user.login.resetPasswordToken = ""
+            user.login.resetPasswordExpires = ""
+            User.update({'_id': userId}, {
+                local: user.local,
+                login: user.login
+            }, function(err, user) {
+                //TODO: show toast          
+                emails.sendPasswordChangedEmail(user)      
+                res.redirect('/auth/login');
+            })        
+        }
+    })
+    //TODO: when errors redirect
 })
 
+/*
+ * =============================================================================
+ *            SOCIAL LOGIN
+ * =============================================================================
+ */
 /* GOOGLE */
 // auth with google, scope is what we want from the user
 router.get('/google', passport.authenticate("google", {

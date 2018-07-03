@@ -16,9 +16,11 @@ const userSchema = new Schema({
         validationToken: String,
         validationTokenExpires: Number,
         resetPasswordToken: String,
-        resetPasswordExpires: Date
+        resetPasswordExpires: Date,
+        recoverPasswordDate: Number
         //logs:[] // 
-
+        //TODO: ip and browser ...
+        //TODO: mobile devices ...
     },
     createdAt: Number,
     googleId: String, // For knowing second time he/she logs in    
@@ -51,11 +53,18 @@ userSchema.methods.generateActivationToken = function() {
     return token
 };
 
+userSchema.methods.generateForgotPasswordToken = function() {      
+    const payload = this.generateTokenPayload()
+    const secret = this.generateTokenSecret(this.login.recoverPasswordDate)    
+    const token = jwt.encode(payload, secret)
+    return token
+};
+
 /**
  * generates a secret for the activaiton token ançd recovery passwords
  */
-userSchema.methods.generateTokenSecret = function() {     
-    return this.local.email + '-' + this.createdAt  
+userSchema.methods.generateTokenSecret = function(date) {     
+    return this.local.email + '-' + (date ? date : this.createdAt)  
 }
 userSchema.methods.generateTokenPayload = function(){
    return { id:  this.id, email: this.local.email }

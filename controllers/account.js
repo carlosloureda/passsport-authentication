@@ -37,8 +37,6 @@ AccountController.validateEmail = (userId, token) => {
         //User.findOne({'local.email': email}, function(err, user) {
         console.log("userId: ", userId)
         User.findOne({_id: userId}, function(err, user) {
-            console.log("ERROR: ", err)
-            console.log("user: ", user)
             if (err) {
                 console.log("ERROR: ", err)
             }
@@ -51,14 +49,9 @@ AccountController.validateEmail = (userId, token) => {
                 if (user.login.validationTokenExpires < Date.now()) {
                     reject("El token ha caducado")
                 }
-                //TODO: update database with validation
-                const updateQuery = {
-                    login: {
-                        validated: true, 
-                        activationDate: Date.now()
-                    }
-                }
-                User.findByIdAndUpdate(userId, { $set: updateQuery }, (err, user) => {
+                user.login.validated = true;
+                user.login.activationDate = Date.now()
+                User.findByIdAndUpdate(userId, { $set: { login:  user.login } }, { new: true }, (err, user) => {
                     if (err) reject(err)
                     console.log("updated validation db")
                     resolve(true)
@@ -69,5 +62,30 @@ AccountController.validateEmail = (userId, token) => {
         })
     })
 } 
+
+AccountController.createRecoverPasswordToken = (email, callback) => {
+    User.findOne({'local.email': email}).then((user) => {
+        if (user) {
+            let token = user.generateForgotPasswordToken()
+            // update user
+            user.login.resetPasswordToken = token;
+            user.login.resetPasswordExpires = Date.now() + 86400000, // 24 hours
+            user.login.recoverPasswordDate = Date.now()
+
+            User.findByIdAndUpdate(user.id, {$set: { login: user.login }}, { new: true } ,(err, user) => {
+                if (err){
+                    //TODO: error 
+                    console.log("errroR: ", err)
+                } 
+                else {
+                    emails.sendRecoveryPasswordEmail(user)
+                }                
+            })
+            
+        } else {
+            //TODO:
+        }
+    })
+};
 
 module.exports = AccountController;
