@@ -15,12 +15,14 @@ var transporter = nodemailer.createTransport({
     }
 });
 
+const from = '"Fred Foo ?" <carloslouredaparrado@gmail.com>'
+
 const sendHelloWorldEmail = () => {
     
     console.log("Sending hello world email")
     // setup e-mail data with unicode symbols
     var mailOptions = {
-        from: '"Fred Foo ?" <carloslouredaparrado@gmail.com>', // sender address
+        from: from, // sender address
         to: 'balanzeneto@gmail.com', // list of receivers
         subject: 'Hello ✔', // Subject line
         text: 'Hello world - 2 ?', // plaintext body
@@ -36,6 +38,26 @@ const sendHelloWorldEmail = () => {
     });
 }
 
+const sendRegistrationEmail = (userModel) => {
+    // setup e-mail data with unicode symbols
+    let authUrl = `http://localhost:3000/auth/confirm-email/${userModel.id}/${userModel.login.validationToken}`
+    console.log("authUrl: ", authUrl)
+    var mailOptions = {
+        from: from, // sender address
+        to: userModel.local.email, // list of receivers
+        subject: '¡Bienvenido!', // Subject line
+        text: 'Sigue el enlace para registrar tu aplicación', // plaintext body
+        html: `<b>Sigue el enlace para registrar tu aplicación: <a href="${authUrl}">enlace</a></b>` // html body
+    };    
+    // send mail with defined transport object
+    transporter.sendMail(mailOptions, function(error, info){
+        if(error){
+            return console.log(error);
+        }
+        console.log('Message sent: ' + info.response);
+    });
+}
+
 module.exports = {
-    sendHelloWorldEmail
+    sendHelloWorldEmail, sendRegistrationEmail
 }

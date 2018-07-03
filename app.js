@@ -45,6 +45,19 @@ app.use('/profile', profileRoutes)
 
 // create home route
 app.get('/', (req, res) => {       
+    // User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.121 Safari/537.36 Vivaldi/1.95.1077.41
+    console.log('User-Agent: ' + req.headers['user-agent']);
+    
+    var ip = (req.headers['x-forwarded-for'] ||
+        req.connection.remoteAddress ||
+        req.socket.remoteAddress ||
+        req.connection.socket.remoteAddress).split(",")[0];
+    
+    // ip: ::1
+    console.log('ip: ' + ip);
+
+    // For mobile phones we need to send the information from the phone
+
     //blzEmails.sendHelloWorldEmail()
     res.render('home', { user: req.user })
 })

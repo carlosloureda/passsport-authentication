@@ -1,15 +1,31 @@
 const router = require('express').Router()
 const passport = require('passport')
+const AccountController = require('../controllers/account')
 
 // process the signup form
 router.post('/register', passport.authenticate("local-signup", {failureRedirect: '/auth/login'}), (req, res) => {
-    res.redirect('/profile/');    
+    res.redirect('/auth/login');    
 })
 
 // auth register
 router.get('/register', (req, res) => {
     //res.render('signup',  { message: req.flash('signupMessage') })
     res.render('signup')
+})
+
+/* Activate and recover passwords */
+router.get('/confirm-email/:id/:token', (req, res) => {
+    let id = req.params.id
+    let token = req.params.token
+    //res.send("good job!")
+    AccountController.validateEmail(id, token).then(() => {
+        // TODO: show toast 
+        res.redirect('/auth/login');
+    }).catch((err) => {
+        //TODO: Show errors
+        console.log("err: ",err)
+        //TODO:  404? or what?
+    })
 })
 
 // process the login form

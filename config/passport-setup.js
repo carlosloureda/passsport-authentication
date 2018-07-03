@@ -1,6 +1,7 @@
 const passport = require('passport');
 const secrets = require('./secrets')
 const User = require('../models/user-model')
+const AccountController = require('../controllers/account')
 
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook').Strategy;
@@ -86,25 +87,15 @@ passport.use('local-signup', new LocalStrategy({
         passwordField : 'password',
         //passReqToCallback : true // allows us to pass back the entire request to the callback
     }, function(email, password, done) {
-        process.nextTick(function() {
-        User.findOne({'local.email': email}).then((currentUser) => {
-                if (currentUser) {
-                    done(null, currentUser)
-                } else {
-                    let newUser = new User();
-                    newUser.local.email = email;
-                    newUser.local.password = newUser.generateHash(password);
-                    
-                    newUser.save().then(() => {
-                        done(null, newUser);
-                    }).catch((err) => {
-                        console.log("error : " , err); 
-                        done(err, null);
-                    })
-                }
-            })
-        }
-    );
+        AccountController.register(email, password, (err, newUser) => {
+            if (err) {
+                console.log("An error happened: ", err)
+                done(err, null)
+            } else {
+                //console.log("newUser: ", newUser)
+                done(null, newUser)
+            }            
+        });
 }));
 
 // =========================================================================
@@ -124,13 +115,14 @@ passport.use('local-login', new LocalStrategy({
         // we are checking to see if the user trying to login already exists
         User.findOne({'local.email': email}, function(err, user) {
             if (err) return done(err);
-            if (!user) return done(null, false); 
-            //return done(null, false, req.flash('loginMessage', 'No user found.')); 
-
+            if (!user) return done(null, false); // Not user found
+            //TODO: set errors and send them
             if (!user.validPassword(password)) {
-                return done(null, false);
-                //return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
+                return done(null, false); // Not password
             }               
+            if (!user.login.validated){
+                return done(null, false); // Email not validated
+            }
             return done(null, user);
         });
     })
