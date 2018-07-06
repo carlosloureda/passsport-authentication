@@ -7,6 +7,8 @@ authentication with Google+ API and PassportJS
 ## Other strategies
     Local (email), Google, Facebook, Twitter, Linkedin, Github
 
+    - See how to fetch emails and pictures
+
 ## Make automated tool to create a website from scratch with users login
 
 ## User registration and emails (Forgot password and so)
@@ -21,3 +23,7 @@ authentication with Google+ API and PassportJS
 ## Add roles
 ## Error pages
 
+Nice features
+----
+Para twitter usa 127.0.0.1 en vez de localhost en el panel de la app
+http://cssdeck.com/labs/jwmv3hsv

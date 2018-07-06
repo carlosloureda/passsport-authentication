@@ -9,6 +9,40 @@ const secrets = {
             clientSecret: '<clientSecret>' 
         }
     },
+    google: {
+        login: {
+            clientID: '<clientID>',
+            clientSecret: '<clientSecret>',
+            callbackURL: '<callbackURL>'
+        }
+    },
+    twitter: {
+        login: {
+            consumerKey: '<consumerKey>',
+            consumerSecret: '<consumerSecret>',
+            callbackURL: '<callbackURL>'
+        }
+    },
+    github: {
+        login: {
+            clientID: '<clientID>',
+            clientSecret: '<clientSecret>',
+            callbackURL: '<callbackURL>'
+        }
+    },
+    linkedin: {
+        login: {
+            clientID: '<clientID>',
+            clientSecret: '<clientSecret>',
+            callbackURL: '<callbackURL>'
+        }
+    },
+    emails: {
+        sendGrid: {
+            user: '<sendGridUser>',
+            password: '<sendGridPassword>'
+        }        
+    },
     mongodb: {
         dbURI: '<dbURI>'
     },
